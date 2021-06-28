@@ -31,3 +31,25 @@ PULocationID,puhour,avg_speed,sd_speed
 
 hourloc do表
 同理为到达地
+
+
+4. Payment 文件夹
+
+- chisq_result.md
+    将支付方式和路程距离的关系，与总价与小费的关系，分别作出列联表后进行卡方检验所得的结果。
+    （两个检验得到的p值都是0，也就是说两个因素不独立）
+
+关于支付方式和路程距离关系的统计
+- paytype_dist.csv
+    不同支付方式(payment)对应的路程距离(dist)的均值和方差
+
+关于总价与小费关系的统计
+- price_tip_data.csv
+    总价对应的小费的频次统计表。纵轴为总价金额所在的区间，横轴为小费金额所在的区间。
+    可以用于画直方图
+
+- price_tip_stat.csv
+    总价对应的小费的均值和方差信息
+
+
+
