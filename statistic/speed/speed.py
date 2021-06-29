@@ -46,14 +46,14 @@ if __name__ == '__main__':
 
     # 每个出发地理位置每个小时速度
     sql = '''
-    select PULocationID, hour(tpep_pickup_datetime) as puhour, AVG(speed) as avg_speed, STDDEV(speed) as sd_speed from taxi group by PULocationID, puhour order by PULocationID, puhour
+    select  hour(tpep_pickup_datetime) as puhour,PULocationID, AVG(speed) as avg_speed, STDDEV(speed) as sd_speed from taxi group by puhour,PULocationID order by  puhour,avg_speed DESC
     '''
     speed = spark.sql(sql)
     speed.filter('PULocationID is not NULL').toPandas().to_csv('hourloc_speed_pu.csv',header = True, index = False)
     
     # 每个到达地理位置每个小时速度
     sql = '''
-    select DOLocationID, hour(tpep_dropoff_datetime) as puhour, AVG(speed) as avg_speed, STDDEV(speed) as sd_speed from taxi group by DOLocationID, puhour order by DOLocationID, puhour
+    select  hour(tpep_dropoff_datetime) as puhour,DOLocationID, AVG(speed) as avg_speed, STDDEV(speed) as sd_speed from taxi group by DOLocationID, puhour order by  puhour,avg_speed DESC
     '''
     speed = spark.sql(sql)
     speed.filter('DOLocationID is not NULL').toPandas().to_csv('hourloc_speed_do.csv',header = True, index = False)
