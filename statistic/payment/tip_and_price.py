@@ -8,6 +8,8 @@ import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType, FloatType
 
+import os
+
 spark = (SparkSession
          .builder
          .appName('example-pyspark-read-and-write-from-hive')
@@ -18,6 +20,7 @@ spark = (SparkSession
 
 # df = spark.read.csv("sampled_data.csv", header=True)
 df = spark.sql("select * from taxi.trips where isNotNull(vendorid)")
+df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0")
 
 
 def cutme_prototype(value:float, splits) -> float:
@@ -65,13 +68,16 @@ def label_tip(rate):
 
 
 #%% 统计小费关于总价的性质，即均值和方差
-# total_tip = df.select(label_total(cut_total('total_amount')).alias("total"), df.tip_amount.alias("tip"))
-# res = total_tip.groupby("total").agg(F.mean("tip"), F.variance("tip"), F.count("tip"))
-# res.sort("total").toPandas().to_csv('price_tip_stat.csv',header = True, index = False)
-# print("success")
+total_tip = df.select(label_total(cut_total('total_amount')).alias("total"), df.tip_amount.alias("tip"))
+res = total_tip.groupby("total").agg(F.mean("tip"), F.variance("tip"), F.count("tip"))
+if os.path.exists('price_tip_stat.csv'): os.remove('price_tip_stat.csv')
+res.sort("total").toPandas().to_csv('price_tip_stat.csv',header = True, index = False)
+print("success")
 
 #%% 统计频率表，用于画直方图
 total_tip_data = df.select(label_total(cut_total('total_amount')).alias("total"), label_tip(cut_tip("tip_amount")).alias("tip"))
 data = total_tip_data.crosstab("total", "tip")
+
+if os.path.exists('price_tip_data.csv'): os.remove('price_tip_data.csv')
 data.toPandas().to_csv("price_tip_data.csv", header=True, index=False)
 

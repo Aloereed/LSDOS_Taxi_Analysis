@@ -77,5 +77,5 @@ ct.sort(ct.total_tip.asc()).show()
 arr = ct.toPandas().values
 res = chi2_contingency(arr[:,1:])
 
-print(res)
 print(">> p-value is {}, therefore we reject H_0:Independent. Which means that paytype and distance are correlated.".format(res[1]))
+print(res)
