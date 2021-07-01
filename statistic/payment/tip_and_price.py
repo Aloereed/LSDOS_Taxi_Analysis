@@ -20,8 +20,8 @@ spark = (SparkSession
 
 # df = spark.read.csv("sampled_data.csv", header=True)
 df = spark.sql("select * from taxi.trips where isNotNull(vendorid)")
-df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0")
-
+df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0 and trip_distance<40000 and trip_distance>0")
+df = df.withColumn('tip_amount',df['tip_amount'].cast(FloatType()))
 
 def cutme_prototype(value:float, splits) -> float:
     '''Categorize the given value.'''
@@ -39,13 +39,13 @@ def cutme_prototype(value:float, splits) -> float:
 
 @udf(returnType=IntegerType())
 def cut_total(value):
-    splits = (-5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70)
+    splits = (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70)
     return cutme_prototype(value, splits)
 
 @udf
 def label_total(rate):
-    splits = (-5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70)
-    tags = ["<{}".format(splits[0])]
+    splits = (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70)
+    tags = ["={}".format(splits[0])]
     for i in range(len(splits) - 1):
         tags.append("{}~{}".format(splits[i], splits[i+1]))
     tags.append(">{}".format(splits[-1]))
@@ -63,6 +63,7 @@ def label_tip(rate):
     for i in range(len(splits) - 1):
         tags.append("{}~{}".format(splits[i], splits[i+1]))
     tags.append(">{}".format(splits[-1]))
+    tags[1] = "=0.0"
     return tags[rate]
 
 

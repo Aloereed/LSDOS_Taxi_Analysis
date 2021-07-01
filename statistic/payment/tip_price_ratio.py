@@ -8,7 +8,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType, StringType, FloatType
 
-from scipy.stats import chi2_contingency
+import os
 
 spark = (SparkSession
          .builder
@@ -21,11 +21,8 @@ spark = (SparkSession
 # df = spark.read.csv("sampled_data.csv", header=True)
 df = spark.sql("select * from taxi.trips where isNotNull(vendorid)")
 df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0 and trip_distance<40000 and trip_distance>0")
-
-
-
-
-#%%
+df = df.withColumn('tip_amount', df["tip_amount"].cast(FloatType()))
+df = df.withColumn('total_amount', df["total_amount"].cast(FloatType()))
 
 def cutme_prototype(value:float, splits) -> float:
     '''Categorize the given value.'''
@@ -42,29 +39,32 @@ def cutme_prototype(value:float, splits) -> float:
     return ind
 
 @udf(returnType=IntegerType())
-def cut_dist(value):
-    splits = tuple(i for i in range(0, 100, 10))
+def cut_ratio(value):
+    splits = tuple(i/100 for i in range(0, 51, 1))
     return cutme_prototype(value, splits)
 
 @udf
-def label_dist(rate):
-    splits = tuple(i for i in range(0, 100, 10))
-    tags = ["<{}".format(splits[0])]
+def label_ratio(rate):
+    splits = tuple(i/100 for i in range(0, 51, 1))
+    tags = ["={}".format(splits[0])]
     for i in range(len(splits) - 1):
         tags.append("{}~{}".format(splits[i], splits[i+1]))
     tags.append(">{}".format(splits[-1]))
     return tags[rate]
 
 
+
+
+#%% 小费与总价比值的频次统计表
+
+# tip_ratio = df.select((df.tip_amount/df.total_amount).alias("ratio"), F.lit(1))
+tip_ratio_rate = df.select(label_ratio(cut_ratio(df.tip_amount/df.total_amount)).alias("ratio"), F.lit(1).alias("count"))\
+    .groupBy("ratio").agg(F.sum("count"))
+# res = total_tip.groupby("total").agg(F.mean("tip"), F.variance("tip"), F.count("tip"))
+#
+# res.sort("total").toPandas().to_csv('price_tip_stat.csv',header = True, index = False)
+# print("success")
+
 #%%
+tip_ratio_rate.sort("ratio").toPandas().to_csv("tip_ratio_rate.csv", header=True, index=False)
 
-ct = df.select("payment_type", label_dist(cut_dist("trip_distance")).alias("dist")).crosstab("payment_type", "dist")
-
-#%%
-
-arr = ct.toPandas().values
-res = chi2_contingency(arr[:,1:])
-
-# print(res)
-print(">> p-value is {}, therefore we reject H_0:Independent. Which means that paytype and distance are correlated.".format(res[1]))
-print(res)

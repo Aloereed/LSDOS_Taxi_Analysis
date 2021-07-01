@@ -18,9 +18,10 @@ spark = (SparkSession
 
 # df = spark.read.csv("sampled_data.csv", header=True)
 df = spark.sql("select * from taxi.trips where isNotNull(vendorid)")
-df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0")
+df = df.filter("passenger_count>0 and trip_distance>0 and fare_amount>0 and total_amount>0 and trip_distance<40000 and trip_distance>0")
+
 
 
 res = df.groupby('payment_type').agg(F.mean(df.trip_distance).alias("avg(dist)"), F.variance(df.trip_distance).alias("var(dist)"), F.count(df.trip_distance).alias("count(dist)"))
-if os.path.exists('paytype_dist.csv'): os.remove('paytype_dist.csv')
+# if os.path.exists('paytype_dist.csv'): os.remove('paytype_dist.csv')
 res.sort(df.payment_type.asc()).toPandas().to_csv('paytype_dist.csv',header = True, index = False)
