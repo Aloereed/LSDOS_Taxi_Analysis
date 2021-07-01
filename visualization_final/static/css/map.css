@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.infoLabel {
+    color: blueviolet;
+}
+
+#mainDiv {
+    text-align: center;
+    /*height: 90%;*/
+    /*width: 70%;*/
+    margin: 10px auto;
+    float: left;
+    /*border: 10px;*/
+}
+
+#infoDiv {
+    /*text-align: center;*/
+    /*height: 90%;*/
+    width: 40%;
+    margin: 10px auto;
+    float: left;
+    border: 5px solid  #ffffff;
+    /*border-left-width: 30px;*/
+}
+
+#rankingDiv {
+    width: 40%;
+    margin: 10px auto;
+    float: left;
+    color: #ffab03;
+    /*border-left-width: 10px;*/
+}
+
+#tableDiv {
+    width: 40%;
+    margin: 10px auto;
+    float: right;
+    /*border-left-width: 10px;*/
+}
+
+#rankingList {
+    resize: none;
+    width: 600px;
+    height: 180px;
+    overflow:scroll;
+    readonly:readonly;
+}
+
+#title {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#mapContainer {
+    /*height: 100%;*/
+    /*text-align: center;*/
+    border: 5px solid #ffc5ac;
+    /*color: rgb(18, 255, 33);*/
+    height: 80%;
+    width: 95%;
+    margin: 0 auto;
+    /*color: #f00;*/
+}
+{
+ '0':   '#008', // dark blue
+ '0.2': '#0b0', // medium green
+ '0.5': '#ff0', // yellow
+ '0.7': '#f00'  // red
+}
+
+#inputTime {
+    width: 30px;
+}

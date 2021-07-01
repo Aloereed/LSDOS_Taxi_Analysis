@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    适配移动端-->
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../static/css/map.css" />
+    <script type="text/javascript" src="https://d3js.org/d3.v6.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-data.js" type="text/javascript" charset="utf-8"></script>
+
+<!--    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=addadd855bbcd90d9a8e9eb9aff704b9"></script>-->
+    <title>Large-Scale Distributed File System</title>
+</head>
+<body>
+    <script> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+    <h3 style="text-align: center">Map of NYC</h3>
+    <div id="mapContainer"></div>
+    <div id="infoDiv">
+        <label for="IdText" class="infoLabel"> Location ID: </label>
+        <span id="IdText"></span> <br>
+        <label for="ZoneText" class="infoLabel">Zone: </label>
+        <span id="ZoneText"></span> <br>
+        <label for="BoroughText" class="infoLabel">Borough: </label>
+        <span id="BoroughText"></span> <br>
+        <label for="ClusterText" class="infoLabel">Cluster: </label>
+        <span id="ClusterText"></span>
+    </div>
+    <div id="mainDiv">
+        <div>
+            <button id="readBtn">Load Data</button>
+            <input id='inputTime' type="text" value="18">
+            <button id="timeBtn">Set</button>
+        </div>
+        <div>
+            <button id="heatmapPUBtn">HeatMap-pu</button>
+            <button id="heatmapDOBtn">HeatMap-do</button>
+        </div>
+        <div> <!--未完成-->
+            <button id="distancePUBtn">Distance-pu</button>
+            <button id="distanceDOBtn">Distance-do</button>
+        </div>
+        <div> <!--未完成-->
+            <button id="speedPUBtn">Speed-pu</button>
+            <button id="speedDOBtn">Speed-do</button>
+        </div>
+        <div>
+            <button id="kmBtn">K-Means Show</button>
+        </div>
+        <div>
+<!--            <button id="cleanRankingBtn">Clean Ranking</button> &lt;!&ndash;已完成&ndash;&gt;-->
+            <button id="cleanBtn">Clean</button>
+        </div>
+        <script src="../static/js/map.js"></script>
+    </div>
+<!--    <div id="rankingDiv">-->
+<!--        <textarea id="rankingList" readonly>Ranking List - Showcase Some Statistical Information...</textarea>-->
+<!--    </div>-->
+    <div id="tableDiv">
+        <table border="1" id="rankingTable">
+            <thead>
+                <th>No.</th>
+                <th>ID</th>
+                <th>Zone</th>
+                <th>Borough</th>
+                <th>Speed/Distance/Cluster</th>
+            </thead>
+            <tbody id="innerTbody">
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
